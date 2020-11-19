@@ -1,0 +1,73 @@
+style(lang="scss").
+  @page {
+    margin: 1cm 0 2cm 0cm;
+    @bottom-center {
+      content: "";
+    }
+  }
+
+link(rel="stylesheet", href="https://fonts.googleapis.com/icon?family=Material+Icons")
+
+img(style="width:150px; display:block; margin:0 auto;"
+    src="https://portalfacilclientes.blob.core.windows.net/uploads/VICOSA/imgOrig/%7B06DB2A70-5CC4-3CB8-CDAC-2BE8AAB1B0DD%7D.jpg")
+
+#sidebar: p Atualizado por Igor Cardoso - {{ hoje.date() }}
+
+
+h1 Relatório semanal dos casos de covid19 na cidade de Viçosa
+
+.ui.piled.segment: p.
+  Este relatório foi feito para acompanhar a progressão dos casos de covid19 doença causada pelo novo coronavirus no município de Viçosa-MG. Sendo o mesmo uma iniciativa voluntária utilizando os dados liberados pela prefeitura em seus canais oficiais.
+
+  
+.ui.container
+  .ui.icon.message.yellow.block-center
+    i.material-icons.icon error
+    .content
+      .header Informações atualizadas da última semana.
+      p.
+        Os últimos lançamentos deste relatório dizem respeito a semana 
+        {{ semana }}, 
+        onde a quantidade média de casos foi {{ casos_medio }}, a quantidade média de recuperados foi de {{ recuperados_medio }}, e a quantidade média de óbitos foi de {{ obitos_medio }}.
+      p.
+        Nesta última semana foram registrados {{ total_casos_semana }} novos casos, {{ total_recuperados_semana }} recuperados e {{ total_mortes_semana }} mortes.
+      p.
+        Os dados totais são de {{ df.casos.sum() }} casos confirmados, {{ df.recuperados.sum() }} recuperados e {{ df.mortes.sum() }} mortes.
+
+
+:markdown
+  ##  Informações Atualizadas
+  
+  Até o presente momento, o relatório considera {{ total_casos }} casos. 
+  Contando com {{ casos_ativos }} casos ativos:
+
+center
+  - var figure = total_ativo.plot("Data", "Casos Ativos")
+  img(src="{{ pdf_tools.figure_data(figure, (6, 4)) }}")
+
+:markdown
+  casos contaminados:
+
+center
+  - var figure = last_week.plot("data", "casos")
+  img(src="{{ pdf_tools.figure_data(figure, (6, 4)) }}")
+
+:markdown
+  casos recuperados:
+
+center
+  - var figure = last_week.plot("data", "recuperados")
+  img(src="{{ pdf_tools.figure_data(figure, (6, 4)) }}")
+
+:markdown
+  mortes confirmadas:
+
+center
+  - var figure = last_week.plot("data", "mortes")
+  img(src="{{ pdf_tools.figure_data(figure, (6, 4)) }}")
+
+:markdown
+  ### Últimos lançamentos
+
+
+{{ pdf_tools.dataframe_to_html(df[df.semana == semana].iloc[-7:]) }}
